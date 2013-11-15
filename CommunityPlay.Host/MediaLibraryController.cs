@@ -12,7 +12,16 @@ namespace CommunityPlay.Host
         [HttpGet]
         public List<Media> List()
         {
+            Console.WriteLine("List media");
             return MediaLibrary.AllMedia();
+        }
+
+        [HttpGet]
+        public IEnumerable<Media> Search(string term)
+        {
+            Console.WriteLine("Searching: " + term);
+            var results = MediaLibrary.AllMedia().FindAll(m => m.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) >= 0);
+            return results;
         }
     }
 }

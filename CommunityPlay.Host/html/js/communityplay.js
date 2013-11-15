@@ -1,9 +1,14 @@
 ﻿$(function () {
-    var viewModel = {
-        title: ko.observable("CommunityPlay @ Cambridge 105"),
-        searchTerm: ko.observable("Search..."),
-        mediaResults: ko.observableArray(),
-        cartButtons: ko.observableArray()
+    var viewModel = new function() {
+        this.title = ko.observable("CommunityPlay @ Cambridge 105");
+        this.searchTerm = ko.observable("Search...");
+        this.mediaResults = ko.observableArray();
+        this.cartButtons = ko.observableArray();
+
+        ko.computed(function () {
+            var params = { term: this.searchTerm };
+            $.getJSON('/api/medialibrary/search', params, this.mediaResults);
+        }, this).extend({ throttle: 500 });
     };
 
     ko.applyBindings(viewModel);
@@ -19,7 +24,7 @@
                         $.get("/api/audio/play/" + id);
                 }}()
             };
-            viewModel.mediaResults.push(mediaItem);
+            //viewModel.mediaResults.push(mediaItem);
             viewModel.cartButtons.push(mediaItem);
         }
     });

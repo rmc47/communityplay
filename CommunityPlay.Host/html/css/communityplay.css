@@ -5,3 +5,10 @@
   padding: 40px 15px;
   text-align: center;
 }
+.navbar-inverse {
+    background-color: #83ae2c;
+}
+
+.navbar-inverse .navbar-brand {
+    color: white;
+}

@@ -12,3 +12,22 @@
 .navbar-inverse .navbar-brand {
     color: white;
 }
+
+.cart-button {
+    width: 100%;
+    margin-bottom: 1em;
+    height: 5em;
+    white-space: normal;
+}
+
+.now-playing-block {
+    min-height: 7em;
+}
+
+.now-playing-row {
+    border: 1px solid #83ae2c;
+    border-radius: 0.5em;
+    vertical-align: middle;
+    padding: 0.25em;
+    margin-bottom: 0.5em;
+}

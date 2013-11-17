@@ -13,6 +13,22 @@ namespace CommunityPlay.Host
         private static bool s_Shutdown = false;
         private static CountdownEvent s_ShutdownSemaphore = new CountdownEvent(1); // Have to start at one otherwise it pre-signals it!
 
+        public event EventHandler<EventArgs> Completed;
+
+        public TimeSpan TimeRemaining
+        {
+            get
+            {
+                if (m_VolumeStream == null)
+                    return TimeSpan.Zero;
+
+                return m_VolumeStream.TotalTime - m_VolumeStream.CurrentTime;
+            }
+        }
+
+        public string Name { get; set; }
+        public string ID { get; set; }
+
         public static void Shutdown()
         {
             s_ShutdownSemaphore.Signal();
@@ -34,6 +50,7 @@ namespace CommunityPlay.Host
         public AudioPlayer(string filename)
         {
             m_Filename = filename;
+            ID = Guid.NewGuid().ToString();
         }
 
         void PlaybackStopped(object sender, StoppedEventArgs e)
@@ -57,6 +74,8 @@ namespace CommunityPlay.Host
                 m_WaveOutDevice = null;
             }
             s_ShutdownSemaphore.Signal();
+            if (Completed != null)
+                Completed(this, new EventArgs());
         }
 
         public void Start()
@@ -93,8 +112,23 @@ namespace CommunityPlay.Host
             m_WaveOutDevice.Stop();
         }
 
+        private const int c_FadeSteps = 100;
+        private const int c_FadeTime = 1500;
+        private int m_FadePoint;
+
         public void FadeOut()
         {
+            m_FadePoint = 0;
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                while (m_FadePoint <= c_FadeSteps)
+                {
+                    m_VolumeStream.Volume = ((float)(c_FadeSteps - m_FadePoint) / c_FadeSteps);
+                    m_FadePoint++;
+                    Thread.Sleep(c_FadeTime / c_FadeSteps);
+                }
+                Stop();
+            });
         }
 
         private static WaveChannel32 CreateInputStream(string fileName)

@@ -58,17 +58,32 @@
 
     <div class="container">
         <div class="row">
+            <div class="col-md-12">
+                <h3>Now Playing</h3>
+                <div class="now-playing-block" data-bind="foreach: nowPlaying">
+                    <div class="now-playing-row">
+                        <div class="row" >
+                            <div class="col-md-8" data-bind="text: Name">Some Artist - Some Track</div>
+                            <div class="col-md-2" data-bind="text: TimeRemaining">12:34</div>
+                            <div class="col-md-1"><button type="button" class="btn btn-default" data-bind="click: $parent.stopPlaying">Stop</button></div>
+                            <div class="col-md-1"><button type="button" class="btn btn-default" data-bind="click: $parent.fadePlaying">Fade</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-6">
-                <h2>Media Library</h2>
+                <h3>Media Library</h3>
                 <label for="searchBox">Search: </label><input type="text" id="searchBox" data-bind="value: searchTerm, valueUpdate: 'afterkeydown'" />
                 <ul id="medialist" data-bind="foreach: mediaResults">
-                    <li><a href="#" data-bind="text: Name"></a></li>
+                    <li><a href="#" data-bind="text: Name, click: $parent.playMediaResult"></a></li>
                 </ul>
             </div>
             <div class="col-md-6">
-                <h2>Carts</h2>
+                <h3>Carts</h3>
                     <div class="row" id="cartsrow" data-bind="foreach: cartButtons">
-                        <div class="col-md-3"><button data-bind="text: text, click: play"></button></div>
+                        <div class="col-md-4"><button type="button" class="btn btn-default cart-button" data-bind="text: text, click: play"></button></div>
                     </div>
             </div>
         </div>

@@ -9,22 +9,52 @@ namespace CommunityPlay.Host
 {
     class MediaLibrary
     {
-        private static List<Media> s_AllMedia;
+        public static MediaLibrary Instance = new MediaLibrary ();
 
-        public static List<Media> AllMedia()
+        private Dictionary<Guid, Media> m_AllMedia = new Dictionary<Guid, Media>();
+        private List<Media> m_AllCarts;
+
+        private MediaLibrary()
         {
-            if (s_AllMedia != null)
-                return s_AllMedia;
+            AddDirectory(GetMedia(@"\\carbon.syxis.co.uk\music\"));
 
-            List<Media> media = new List<Media>();
-            int nextID = 1;
-            foreach (string path in Directory.GetFiles(@"D:\dropbox\cambridge 105 daytime team", "*.mp3", SearchOption.AllDirectories))
+            var allCarts = GetMedia(@"D:\dropbox\Cambridge 105 Daytime Team");
+            m_AllCarts = allCarts;
+            AddDirectory(allCarts);
+        }
+
+        private void AddDirectory(List<Media> media)
+        {
+            foreach (Media m in media)
+                m_AllMedia[m.ID] = m;
+        }
+
+        private List<Media> GetMedia(string directory)
+        {
+            List<Media> media = new List<Media> ();
+            foreach (string path in Directory.GetFiles(directory, "*.mp3", SearchOption.AllDirectories))
             {
-                media.Add(new Media { ID = nextID++, Name = Path.GetFileNameWithoutExtension(path), Path = path });
-                if (nextID > 1000)
-                    break;
+                var m = new Media { ID = Guid.NewGuid(), Name = Path.GetFileNameWithoutExtension(path), Path = path};
+                media.Add(m);
             }
-            return s_AllMedia = media;
+            return media;
+        }
+
+        public List<Media> AllCarts
+        {
+            get { return m_AllCarts; }
+        }
+
+        public Media GetByID(Guid id)
+        {
+            Media m;
+            m_AllMedia.TryGetValue(id, out m);
+            return m;
+        }
+
+        public IEnumerable<Media> Search(string term)
+        {
+            return m_AllMedia.Values.Where(m => m.Name.ToLowerInvariant().Contains(term.ToLowerInvariant()));
         }
     }
 }

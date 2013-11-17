@@ -10,9 +10,17 @@ namespace CommunityPlay.Host
     public class AudioController : ApiController
     {
         [HttpGet]
-        public void Play(int id)
+        public void Play(string id)
         {
-            new AudioPlayer(MediaLibrary.AllMedia().Find(m => m.ID == id).Path).Start();
+            Guid g;
+            if (!Guid.TryParse(id, out g))
+                return;
+
+            var media = MediaLibrary.Instance.GetByID(g);
+            if (media == null)
+                return;
+
+            AudioManager.Instance.Start(media.Path);
         }
 
         [HttpGet]

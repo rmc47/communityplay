@@ -10,18 +10,20 @@ namespace CommunityPlay.Host
     public class MediaLibraryController : ApiController
     {
         [HttpGet]
-        public List<Media> List()
+        public List<Media> ListCarts()
         {
             Console.WriteLine("List media");
-            return MediaLibrary.AllMedia();
+            return MediaLibrary.Instance.AllCarts;
         }
 
         [HttpGet]
         public IEnumerable<Media> Search(string term)
         {
             Console.WriteLine("Searching: " + term);
-            var results = MediaLibrary.AllMedia().FindAll(m => m.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) >= 0);
-            return results;
+            if (string.IsNullOrEmpty(term))
+                return new Media[0];
+
+            return MediaLibrary.Instance.Search(term);
         }
     }
 }

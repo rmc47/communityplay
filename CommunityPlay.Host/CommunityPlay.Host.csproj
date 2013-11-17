@@ -81,12 +81,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioController.cs" />
+    <Compile Include="AudioManager.cs" />
     <Compile Include="AudioPlayer.cs" />
     <Compile Include="HtmlController.cs" />
     <Compile Include="IndexController.cs" />
     <Compile Include="Media.cs" />
     <Compile Include="MediaLibrary.cs" />
     <Compile Include="MediaLibraryController.cs" />
+    <Compile Include="NowPlayingController.cs" />
+    <Compile Include="NowPlayingItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
